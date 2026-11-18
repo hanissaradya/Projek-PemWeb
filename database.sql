@@ -1,23 +1,23 @@
 -- =====================================================
--- DATABASE: db_pengaduan_publik
--- Sistem Informasi Pengaduan Fasilitas Publik (SIPADU)
+-- DATABASE: db_bantuan_sosial
+-- Sistem Informasi Bantuan Sosial (SIBANTU)
 -- =====================================================
 
-CREATE DATABASE IF NOT EXISTS `db_pengaduan_publik`
+CREATE DATABASE IF NOT EXISTS `db_bantuan_sosial`
   DEFAULT CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE `db_pengaduan_publik`;
+USE `db_bantuan_sosial`;
 
 -- =====================================================
--- TABEL: kategori
+-- TABEL: jenis_bantuan
 -- =====================================================
-CREATE TABLE IF NOT EXISTS `kategori` (
+CREATE TABLE IF NOT EXISTS `jenis_bantuan` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `nama_kategori` VARCHAR(100) NOT NULL,
+  `nama_jenis` VARCHAR(100) NOT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_nama_kategori` (`nama_kategori`)
+  UNIQUE KEY `uk_nama_jenis` (`nama_jenis`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
@@ -34,67 +34,67 @@ CREATE TABLE IF NOT EXISTS `admin` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- TABEL: pengaduan
+-- TABEL: pengajuan
 -- =====================================================
-CREATE TABLE IF NOT EXISTS `pengaduan` (
+CREATE TABLE IF NOT EXISTS `pengajuan` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `kode_tiket` VARCHAR(20) NOT NULL,
-  `nama_pelapor` VARCHAR(100) NOT NULL,
+  `nama_pemohon` VARCHAR(100) NOT NULL,
   `no_hp` VARCHAR(20) NOT NULL,
-  `id_kategori` INT(11) NOT NULL,
-  `lokasi` VARCHAR(255) NOT NULL,
-  `isi_laporan` TEXT NOT NULL,
-  `status` ENUM('Menunggu','Diproses','Selesai') NOT NULL DEFAULT 'Menunggu',
+  `id_jenis` INT(11) NOT NULL,
+  `alamat` VARCHAR(255) NOT NULL,
+  `alasan` TEXT NOT NULL,
+  `status` ENUM('Menunggu','Diverifikasi','Disalurkan') NOT NULL DEFAULT 'Menunggu',
   `tanggapan` TEXT DEFAULT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_kode_tiket` (`kode_tiket`),
   KEY `idx_status` (`status`),
-  KEY `idx_kategori` (`id_kategori`),
-  CONSTRAINT `fk_pengaduan_kategori`
-    FOREIGN KEY (`id_kategori`) REFERENCES `kategori` (`id`)
+  KEY `idx_jenis` (`id_jenis`),
+  CONSTRAINT `fk_pengajuan_jenis`
+    FOREIGN KEY (`id_jenis`) REFERENCES `jenis_bantuan` (`id`)
     ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- SEED: kategori
+-- SEED: jenis_bantuan
 -- =====================================================
-INSERT INTO `kategori` (`nama_kategori`) VALUES
-('Jalan & Trotoar'),
-('Penerangan Jalan'),
-('Saluran Air / Drainase'),
-('Sampah & Kebersihan'),
-('Taman & Ruang Publik'),
-('Fasilitas Umum Lainnya');
+INSERT IGNORE INTO `jenis_bantuan` (`nama_jenis`) VALUES
+('Bantuan Pangan / Sembako'),
+('Bantuan Tunai Keluarga Prasejahtera'),
+('Bantuan Lansia'),
+('Bantuan Penyandang Disabilitas'),
+('Bantuan Pendidikan Anak'),
+('Bantuan Perbaikan Rumah Tidak Layak Huni');
 
 -- =====================================================
 -- SEED: admin
 -- Password plain: admin123  (login.php mendukung plain & hash)
--- Password hash alternatif (bcrypt admin123):
---   $2y$10$e0MYzXyjpJS7Pd0RVvHwHe1H6J9c1gH8rB9f1PZ1k1Q1r1Z1u1z1u
+-- Untuk memakai hash, jalankan di PHP: echo password_hash('admin123', PASSWORD_DEFAULT);
+-- lalu tempel hasilnya ke kolom password.
 -- =====================================================
-INSERT INTO `admin` (`nama`, `username`, `password`) VALUES
+INSERT IGNORE INTO `admin` (`nama`, `username`, `password`) VALUES
 ('Administrator', 'admin', 'admin123'),
-('Petugas Lapangan', 'petugas', 'petugas123');
+('Petugas Verifikasi', 'petugas', 'petugas123');
 
 -- =====================================================
--- SEED: contoh pengaduan (opsional, untuk uji coba)
+-- SEED: contoh pengajuan (opsional, untuk uji coba)
 -- =====================================================
-INSERT INTO `pengaduan`
-  (`kode_tiket`, `nama_pelapor`, `no_hp`, `id_kategori`, `lokasi`, `isi_laporan`, `status`, `tanggapan`)
+INSERT IGNORE INTO `pengajuan`
+  (`kode_tiket`, `nama_pemohon`, `no_hp`, `id_jenis`, `alamat`, `alasan`, `status`, `tanggapan`)
 VALUES
-('ADU-A1B2C3', 'Budi Santoso', '081234567890', 1, 'Jl. Merdeka No. 10',
- 'Lubang besar di trotoar depan pasar, membahayakan pejalan kaki.',
+('BSO-A1B2C3', 'Budi Santoso', '081234567890', 1, 'Dusun Krajan RT 02/RW 01, Desa Sukamaju',
+ 'Kepala keluarga kehilangan pekerjaan sejak 3 bulan lalu, kebutuhan pangan untuk 4 anggota keluarga tidak tercukupi.',
  'Menunggu', NULL),
 
-('ADU-D4E5F6', 'Siti Aminah', '081298765432', 2, 'Jl. Sudirman KM 3',
- 'Lampu jalan mati sejak seminggu, jalan jadi gelap di malam hari.',
- 'Diproses', 'Petugas sudah mengecek lokasi, penggantian lampu dijadwalkan minggu ini.'),
+('BSO-D4E5F6', 'Siti Aminah', '081298765432', 3, 'Jl. Melati No. 7, Kelurahan Karanganyar',
+ 'Lansia berusia 72 tahun, hidup sendiri, tidak memiliki penghasilan tetap dan membutuhkan bantuan kebutuhan sehari-hari.',
+ 'Diverifikasi', 'Petugas telah melakukan kunjungan rumah. Berkas dinyatakan lengkap dan sedang menunggu jadwal penyaluran.'),
 
-('ADU-G7H8I9', 'Ahmad Rizki', '081377788899', 4, 'Kelurahan Sukamaju',
- 'Tempat sampah penuh dan berbau, belum diangkut 3 hari.',
- 'Selesai', 'Sampah sudah diangkut pada 12/11. Terima kasih atas laporannya.');
+('BSO-G7H8I9', 'Ahmad Rizki', '081377788899', 5, 'Desa Wonolelo RT 04/RW 02',
+ 'Dua anak usia sekolah tidak mampu membeli perlengkapan sekolah dan membayar iuran bulanan.',
+ 'Disalurkan', 'Bantuan pendidikan telah disalurkan pada 12/11. Terima kasih atas pengajuannya.');
 
 -- =====================================================
 -- SELESAI
