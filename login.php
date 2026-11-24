@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="text-center mb-6">
     <div class="inline-flex w-12 h-12 rounded-2xl bg-teal-900 text-white items-center justify-center font-bold text-lg">SB</div>
     <h1 class="mt-3 text-2xl font-bold text-teal-900">SIBANTU</h1>
-    <p class="text-sm text-slate-500">Login Petugas / Admin</p>
+    <p class="text-sm text-slate-500">Login Petugas</p>
   </div>
 
   <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
