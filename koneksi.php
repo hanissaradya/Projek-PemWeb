@@ -3,7 +3,7 @@
 $host = 'localhost';
 $user = 'root';
 $pass = '';
-$db   = 'db_bantuan_sosial';
+$db   = 'sibantu';
 
 $koneksi = mysqli_connect($host, $user, $pass, $db);
 
