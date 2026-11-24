@@ -1,13 +1,13 @@
 -- =====================================================
--- DATABASE: db_bantuan_sosial
+-- DATABASE: sibantu
 -- Sistem Informasi Bantuan Sosial (SIBANTU)
 -- =====================================================
 
-CREATE DATABASE IF NOT EXISTS `db_bantuan_sosial`
+CREATE DATABASE IF NOT EXISTS `sibantu`
   DEFAULT CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE `db_bantuan_sosial`;
+USE `sibantu`;
 
 -- =====================================================
 -- TABEL: jenis_bantuan
