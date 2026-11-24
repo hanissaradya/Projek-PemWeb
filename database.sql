@@ -75,8 +75,7 @@ INSERT IGNORE INTO `jenis_bantuan` (`nama_jenis`) VALUES
 -- lalu tempel hasilnya ke kolom password.
 -- =====================================================
 INSERT IGNORE INTO `admin` (`nama`, `username`, `password`) VALUES
-('Administrator', 'admin', 'admin123'),
-('Petugas Verifikasi', 'petugas', 'petugas123');
+('Petugas Verifikasi', 'admin', 'admin123');
 
 -- =====================================================
 -- SEED: contoh pengajuan (opsional, untuk uji coba)
